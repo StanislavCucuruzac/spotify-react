@@ -20,9 +20,7 @@ export const Create = () => {
     
 
     const next = () => {
-        // if (activeStep !== 1) {
-        //     setActiveStep(prev => prev + 1)
-        // }
+       
         if(activeStep ==0){
             setActiveStep(prev => prev + 1)
         }        
@@ -33,13 +31,11 @@ export const Create = () => {
         if(activeStep ==2){    
             setActiveStep(prev => prev + 1) 
             let formData = new FormData();
-            formData.append("File", file);  
+            formData.append("File", file[0][0]);  
             formData.append("Name", nameOfTrack);  
-            formData.append("ArtistId", artistId);  
-            let newData = data.slice()    
-            newData[0]['File']= file;
-            setData(newData)       
-            console.log(data)       
+            formData.append("ArtistId", artistId); 
+            console.log(file[0][0]);
+            console.log(formData);            
             if(localStorage.getItem('token') !== null){
                 const token = localStorage.getItem('token')
          console.log(token)

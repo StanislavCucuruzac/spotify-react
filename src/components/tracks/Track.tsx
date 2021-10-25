@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Card, Button, Box } from '@material-ui/core'
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { Create } from "./create";
 import { ITrack } from "../types/track";
@@ -11,12 +10,10 @@ import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel'
 import { Select, MenuItem, Snackbar } from '@material-ui/core'
-import SimpleModal from "../Modal";
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import Alert from '@material-ui/lab/Alert';
 import TextField from '@material-ui/core/TextField';
-
 
 export const Tracks = () => {
     const useStyles = makeStyles((theme) => ({

@@ -9,10 +9,7 @@ import { Login } from "./login/Login";
 export const Principle = () => {
     return (
         <div className="principle">
-            <div className="UpperNavbar">text
-                <button className="singBtn">
-                    SING UP
-                </button>   
+            <div className="UpperNavbar">                 
                 <Link to="/login">
                 <button className="logBtn">                    
                     LOG IN

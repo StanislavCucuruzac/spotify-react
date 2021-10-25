@@ -2,65 +2,146 @@ import React, { useEffect } from "react";
 import { StepWrapper } from "../../components/StepWrapper";
 import { Grid, Button } from '@material-ui/core';
 import { useState } from "react";
-import { TextField } from "@material-ui/core";
+import { TextField , Select, MenuItem, FormControl} from "@material-ui/core";
+import InputLabel from '@material-ui/core/InputLabel'
 import { FileUpload } from "../FileUpload";
-import {TrackUpload} from "../TrackUpload"
+import { TrackUpload } from "../TrackUpload"
+import axios from "axios";
+import { Redirect } from "react-router-dom";
+
+
 
 export const Create = () => {
-    const [activeStep, setActiveStep] =useState(0)
+    const[artists, setArtists]: any = useState([]);
+    const [activeStep, setActiveStep] = useState(0)
+    const [nameOfTrack, setNameOfTrack]: any = useState('');
+    const [file, setFile]: any = useState([]);
+    const [artistId, setArtistId] = useState('');
+    
+
     const next = () => {
-        if(activeStep !==2){
-            setActiveStep(prev => prev +1)
+        // if (activeStep !== 1) {
+        //     setActiveStep(prev => prev + 1)
+        // }
+        if(activeStep ==0){
+            setActiveStep(prev => prev + 1)
+        }        
+        if(activeStep ==1){
+            setActiveStep(prev => prev + 1)
+                setData([...data, {ArtistId: artistId, Name: nameOfTrack}])
         }
-       
+        if(activeStep ==2){    
+            setActiveStep(prev => prev + 1) 
+            let formData = new FormData();
+            formData.append("File", file);  
+            formData.append("Name", nameOfTrack);  
+            formData.append("ArtistId", artistId);  
+            let newData = data.slice()    
+            newData[0]['File']= file;
+            setData(newData)       
+            console.log(data)       
+            if(localStorage.getItem('token') !== null){
+                const token = localStorage.getItem('token')
+         console.log(token)
+            axios.post('https://localhost:44345/api/Song', formData,
+             { headers: {"Content-Type": "multipart/form-data",
+             "Authorization": `Bearer ` +   
+             token}})
+                .then(res => {
+                    console.log(res.data);                   
+                })
+                .catch((error) => {
+                        console.log(error)
+                    });
+            }   
+           
+        }
+
     }
     const back = () => {
-        setActiveStep(prev => prev -1)
+        setActiveStep(prev => prev - 1)
     }
-    const changeData = (value: any) =>{
-        setData([...data, {File: value}]);
+    
+    const changeData = (value: any) => {
+        setFile([...file,  value ]);
     }
-    const[data, setData]: any = useState([]);
-    useEffect(()=>{
-        console.log(data)
-    })
-   const setTrackName =(event: any) =>{
-        setData([...data, {Name: event?.target.value}])
-   }
-   const setArtistName =(event: any) =>{
-    setData([...data, {ArtistId: event?.target.value}])
-}
+    const [data, setData]: any = useState([]);    
+  
+    const setTrackName = (event: any) => {
+      setNameOfTrack(event.target.value);
+    }
+    const setArtistName = (event: any) => {
+        setData([...data, { ArtistId: event?.target.value }])
+    }
+
+    
+
+     const handleChangeSelect = (event: any) => {
+        setArtistId(event.target.value);
+    };
+    useEffect(() => {
+             console.log(data)
+        if(localStorage.getItem('token') !== null){
+            const token = localStorage.getItem('token')
+     console.log(token)
+        axios.get('https://localhost:44345/api/artists',
+         { headers: {"content-type": "application/json", "Authorization": `Bearer ` +   
+         token}})
+            .then(res => {
+                console.log(res.data);
+                setArtists(res.data)
+            })
+            .catch((error) => {
+                    console.log(error)
+                });
+        }   
+        else {
+             <Redirect to="/login" />;
+        }
+     
+    }, []);
 
     return (
         <Grid container>
             <StepWrapper activeStep={activeStep}>
-               {activeStep === 0 &&
-               <Grid container direction ={"column"} style={{padding: 20}}>
-                   <TextField onChange={setTrackName}
-                   style={{marginTop: 10}}
-                   label={"Name of track"}
-                   />
-                   <TextField onChange={setArtistName}
-                   style={{marginTop: 10}}
-                   label={"Name of Artis"}                  
-                   />
-               </Grid>
-               }
-                {activeStep === 1 &&
+                {activeStep === 0 &&
+                    <Grid container direction={"column"} style={{ padding: 20 }}>
+                        <TextField onChange={setTrackName}
+                            style={{ marginTop: 10 }}
+                            label={"Name of track"}
+                        />
+                        <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Name of Artist</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={artistId}
+                            label="Name of Artist"
+                            onChange={handleChangeSelect}
+                        >
+                            {artists.map((artist: any) =>{
+                                return <MenuItem value={artist.id}>{artist.name}</MenuItem>  
+                            })}                                                     
+                        </Select>
+                        </FormControl>
+
+                    </Grid>
+                }
+                {/* {activeStep === 1 &&
                <FileUpload file={''} setFile={() => ({})} accept={"image/"}>
                    <Button>Upload img</Button>
                </FileUpload>
-               }
-                {activeStep === 2 &&
-               <TrackUpload data={data} setData={changeData} file={''} setFile={() => ({})} accept={"image/"}>
-               <Button>Upload song</Button>
-           </TrackUpload>
-               }
+               } */}
+                {activeStep === 1 &&
+                    <TrackUpload data={file} setData={changeData} file={''} setFile={() => ({})} accept={"audio/*"}>
+                        <Button>Upload song</Button>
+                    </TrackUpload>
+                }
             </StepWrapper>
-            <Grid container justifyContent= 'space-between'>
-                <Button disabled={activeStep===0} style={{color: 'white'}} onClick={back}>Back</Button>
-                <Button style={{color: 'white'}} onClick={next}>Next</Button>               
-           </Grid>
+            <Grid container justifyContent='space-between'>
+                <Button disabled={activeStep === 0} style={{ color: 'white' }} onClick={back}>Back</Button>
+                <Button style={{ color: 'white' }} onClick={next}>Next</Button>
+            </Grid>
         </Grid>
 
     )

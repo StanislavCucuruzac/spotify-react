@@ -14,7 +14,6 @@ interface FileUploadProps {
 
 export const FileUpload: React.FC<FileUploadProps> = ({file, setFile, accept, children}) => {
     const inputAddPhotoRef = useRef<any>();
-    //const inputField = React.useRef() as React.MutableRefObject<HTMLInputElement>
 
     const handleAddPhoto = () => {
         inputAddPhotoRef.current.click();

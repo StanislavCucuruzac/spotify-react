@@ -14,10 +14,10 @@ interface FileUploadProps {
 export const TrackUpload: React.FC<FileUploadProps> = ({file, setFile, accept, children, setData, data}) => {
     const inputAddPhotoRef = useRef<any>();
     //const inputField = React.useRef() as React.MutableRefObject<HTMLInputElement>
-    setData("hello"); 
+   // setData("hello"); 
     const uploadTrack = (event: any) =>{
         console.log(event.target.files)
-        setData([...data, {File: event.target.files[0]}])
+        setData(event.target.files)
     }
     const Input = styled('input')({
         display: 'none',
@@ -25,7 +25,7 @@ export const TrackUpload: React.FC<FileUploadProps> = ({file, setFile, accept, c
       
        return(
         <label htmlFor="contained-button-file">
-           <Input onChange={uploadTrack} accept="image/*" id="contained-button-file" multiple type="file" />
+           <Input onChange={uploadTrack} accept="audio/*" id="contained-button-file" multiple type="file"/>
             <Button variant="contained"  component="span">
                 Upload        
              </Button>    

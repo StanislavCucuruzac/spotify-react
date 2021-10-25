@@ -5,7 +5,7 @@ interface StepWrapperProps {
     activeStep: number;
 }
 
-const steps = ["Track info", "Imgae upload", "Track Upload"]
+const steps = ["Track info", "Track Upload"]
 
 export const StepWrapper: React.FC<StepWrapperProps> = ({ activeStep, children }) => {
     
